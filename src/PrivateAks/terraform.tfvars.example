@@ -1,0 +1,31 @@
+project_name = "privateaks-dev"
+
+# Required: Existing infrastructure
+# You must provide the name of an existing resource group
+resource_group_name = "my-existing-rg"
+
+# You must provide the subnet ID where AKS will be deployed
+aks_subnet_id = "/subscriptions/YOUR_SUBSCRIPTION_ID/resourceGroups/YOUR_RG/providers/Microsoft.Network/virtualNetworks/YOUR_VNET/subnets/YOUR_SUBNET"
+
+# Egress configuration - Choose based on your setup:
+# - "userDefinedRouting" for Azure Firewall/NVA with UDRs (default)
+# - "managedNATGateway" for Azure NAT Gateway
+# - "loadBalancer" for standard load balancer (not recommended for private clusters)
+outbound_type = "userDefinedRouting"
+
+# Kubernetes service network configuration
+# These ranges must not overlap with your VNet address space
+service_cidr   = "10.1.0.0/16"
+dns_service_ip = "10.1.0.10"
+
+# AKS configuration
+kubernetes_version = "1.33"
+node_count        = 2
+node_vm_size      = "Standard_D2s_v3"
+
+tags = {
+  Environment = "Development"
+  Project     = "PrivateAks"
+  CreatedBy   = "Terraform"
+  Owner       = "DevOps Team"
+}

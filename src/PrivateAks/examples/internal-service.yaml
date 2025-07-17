@@ -1,0 +1,40 @@
+# Example Kubernetes service using internal load balancer
+# This demonstrates Core Requirement #3: Internal-only service endpoints
+apiVersion: v1
+kind: Service
+metadata:
+  name: internal-service
+  annotations:
+    # This annotation ensures Azure creates an internal load balancer only
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    # Optionally specify subnet for the internal load balancer
+    # service.beta.kubernetes.io/azure-load-balancer-internal-subnet: "aks-subnet"
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: myapp
+---
+# Example deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: nginx:latest
+        ports:
+        - containerPort: 8080
